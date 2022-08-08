@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS Chat App Project</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="well">
+                    <h3>Online Users</h3>
+                    <ul class="list-group" id="users">
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="chat id" id="chat"></div>
+                <form id="messageform">
+                    <div class="form-group">
+                        <label>Enter Message</label>
+                        <textarea class="form-control" id="message" cols="30" rows="2"></textarea>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="send message"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function(){
+            var socket = io.connect()
+            var $messageForm = $("#messageform")
+            var $message = $("#message")
+            var $chat = $("#chat")
+
+            $messageForm.submit(function(e){
+                e.preventDefault()
+                socket.emit("send message", $message.val())
+                $message.val("")
+                console.log("submitted")
+            })
+            socket.on('new message', function(data){
+                $chat.append("<div class='well'>"+data.msg+"</div>")
+            })
+        })
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</body>
+</html>
